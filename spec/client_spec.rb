@@ -7,7 +7,7 @@ describe Emeals::Client do
 
   before(:each) do
     menu_text = menu_path.sub(/\.pdf$/, '.txt')
-    Emeals::Client.stub(:pdf_to_text).and_return(File.read(menu_text))
+    client.stub(:pdf_to_text).and_return(File.read(menu_text))
 
     @menu = client.parse(menu_path)
   end
