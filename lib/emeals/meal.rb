@@ -26,6 +26,7 @@ class Emeals::Meal
 
     entree_name, side_name = separate_entree_and_side_names(names)
     @entree = Emeals::Dish.new(entree_name)
+    @side = Emeals::Dish.new(side_name)
 
     self
   end
@@ -38,13 +39,17 @@ class Emeals::Meal
         names
       when 3
         if names[1].length < names[0].length
-          [names[0..1].join(" "), names[2]]
+          [join_names(names[0..1]), names[2]]
         else
-          [names[0], names[1..2].join(" ")]
+          [names[0], join_names(names[1..2])]
         end
       else
-        [names[0..1].join(" "), names[2..-1].join(" ")]
+        [join_names(names[0..1]), join_names(names[2..-1])]
     end
+  end
+
+  def join_names(names)
+    names.join(" ").gsub('- ', '-')
   end
 end
 
