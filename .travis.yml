@@ -5,4 +5,5 @@ rvm:
   - rbx-19mode
   - jruby-19mode
 script:
+  - sudo apt-get install xpdf
   - bundle exec rake
