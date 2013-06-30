@@ -1,19 +1,4 @@
-class Emeals::Meal
-  attr_accessor :entree, :side
-
-  def initialize(entree, side)
-    @entree = entree
-    @side = side
-  end
-end
-
-class Emeals::Dish
-  attr_accessor :name
-
-  def initialize(name)
-    @name = name
-  end
-end
+require 'emeals/meal'
 
 class Emeals::Menu
   attr_reader :count, :meals
@@ -24,11 +9,20 @@ class Emeals::Menu
   end
 
   def parse!(menu_text)
+    buffer = []
+    add_to_buffer = false
     menu_text.split("\n").each do |line|
       if line =~ /Meal (\d+)/
-        next if @count >= $1.to_i
-        @count = @count + 1
-        @meals << Emeals::Meal.new(Emeals::Dish.new("Meal #{$1}"), nil)
+        unless buffer.empty? and !add_to_buffer
+          @count = @count + 1
+          @meals << Emeals::Meal.new.parse!(buffer.join("\n"))
+        end
+
+        add_to_buffer = @count < $1.to_i
+        buffer = add_to_buffer ? [line] : []
+        next unless add_to_buffer
+      else
+        buffer << line if add_to_buffer
       end
     end
     self
