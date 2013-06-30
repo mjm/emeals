@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mjm/emeals.png?branch=master)](https://travis-ci.org/mjm/emeals)
+
 # Emeals
 
 A library for reading menus from [eMeals][].

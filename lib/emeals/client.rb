@@ -1,6 +1,7 @@
 require 'emeals/menu'
 
 require 'fileutils'
+require 'tempfile'
 
 class Emeals::Client
   def parse(filename)

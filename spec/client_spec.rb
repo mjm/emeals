@@ -6,6 +6,9 @@ describe Emeals::Client do
   let(:menu_path) { File.join(File.dirname(__FILE__), 'fixtures', 'menu.pdf') }
 
   before(:each) do
+    menu_text = menu_path.sub(/\.pdf$/, '.txt')
+    Emeals::Client.stub(:pdf_to_text).and_return(File.read(menu_text))
+
     @menu = client.parse(menu_path)
   end
 
