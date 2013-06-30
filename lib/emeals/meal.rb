@@ -1,10 +1,11 @@
 class Emeals::Meal
-  attr_reader :entree, :side, :flags
+  attr_reader :entree, :side, :flags, :times
 
   def initialize
     @entree = entree
     @side = side
     @flags = []
+    @times = {}
   end
 
   def parse!(meal_text)
@@ -21,6 +22,9 @@ class Emeals::Meal
           else
             names << line
           end
+        when :times
+          parse_times(line)
+          parse_state = :entree_ingredients
         else
 
       end
@@ -40,16 +44,23 @@ class Emeals::Meal
       "Marinate Ahead" => :marinate_ahead
   }
 
+  %w(slow_cooker on_the_grill super_fast marinate_ahead).each do |flag|
+    define_method "#{flag}?" do
+      @flags.include? flag.to_sym
+    end
+  end
+
   def parse_flags(line)
     FLAGS.each do |flag, sym|
       @flags << sym if line.include? flag
     end
   end
 
-  %w(slow_cooker on_the_grill super_fast marinate_ahead).each do |flag|
-    define_method "#{flag}?" do
-      @flags.include? flag.to_sym
-    end
+  def parse_times(line)
+    times = line.split(" ")
+    @times[:prep] = times.first
+    @times[:cook] = times[1]
+    @times[:total] = times[2..-1].join(" ")
   end
 
   private

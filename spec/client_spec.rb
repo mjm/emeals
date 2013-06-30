@@ -67,4 +67,21 @@ describe Emeals::Client do
       expect(@meals[6]).to be_marinate_ahead
     end
   end
+
+  describe "times" do
+    it "reads prep times correctly" do
+      expect(@meals.first.times[:prep]).to eq "10m"
+      expect(@meals[5].times[:prep]).to eq "15m"
+    end
+
+    it "reads cook times correctly" do
+      expect(@meals.first.times[:cook]).to eq "20m"
+      expect(@meals[1].times[:cook]).to eq "4h"
+    end
+
+    it "reads total times correctly" do
+      expect(@meals.first.times[:total]).to eq "30m"
+      expect(@meals[1].times[:total]).to eq "4h 10m"
+    end
+  end
 end
