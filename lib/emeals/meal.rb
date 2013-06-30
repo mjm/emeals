@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 class Emeals::Meal
   attr_reader :entree, :side, :flags, :times
 
@@ -18,6 +20,9 @@ class Emeals::Meal
           parse_state = :names
         when :names
           if line =~ /Prep Cook Total/
+            entree_name, side_name = separate_entree_and_side_names(names)
+            @entree = Emeals::Dish.new(entree_name)
+            @side = Emeals::Dish.new(side_name)
             parse_state = :times
           else
             names << line
@@ -25,14 +30,18 @@ class Emeals::Meal
         when :times
           parse_times(line)
           parse_state = :entree_ingredients
+        when :entree_ingredients
+          if line.include? "-------"
+            parse_state = :side_ingredients
+          else
+            line.scan(/((?:\d|¼|½)+) (.+?)(?=, (?:\d|¼|½)+|$)/).each do |quantity, description|
+              @entree.ingredients << Emeals::Ingredient.new(quantity, description)
+            end
+          end
         else
 
       end
     end
-
-    entree_name, side_name = separate_entree_and_side_names(names)
-    @entree = Emeals::Dish.new(entree_name)
-    @side = Emeals::Dish.new(side_name)
 
     self
   end
@@ -86,9 +95,30 @@ class Emeals::Meal
 end
 
 class Emeals::Dish
-  attr_accessor :name
+  attr_accessor :name, :ingredients, :instructions
 
   def initialize(name)
     @name = name
+    @ingredients = []
+    @instructions = []
+  end
+end
+
+class Emeals::Ingredient
+  attr_accessor :quantity, :description
+
+  def initialize(quantity, description)
+    @quantity = to_quantity(quantity)
+    @description = description
+  end
+
+  private
+
+  def to_quantity(str)
+    case str
+      when "¼"; '1/4'
+      when "½"; '1/2'
+      else      str
+    end.to_r
   end
 end
