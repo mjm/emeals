@@ -106,22 +106,36 @@ describe Emeals::Client do
   end
 
   describe "side ingredients" do
-    let(:dish) { @meals[2].side }
+    let(:dish) { @meals[3].side }
 
     it "reads the correct number of ingredients" do
-      expect(dish.ingredients.size).to be 7
+      expect(dish.ingredients.size).to be 5
     end
 
     it "reads the correct descriptions of ingredients" do
-      expect(dish.ingredients[0].description).to eq "lb fresh zucchini, trimmed and thinly sliced"
-      expect(dish.ingredients[2].description).to eq "teaspoon kosher salt"
-      expect(dish.ingredients[3].description).to eq "teaspoon pepper"
+      expect(dish.ingredients[0].description).to eq "(5-oz) bag baby spinach"
+      expect(dish.ingredients[1].description).to eq "cup drained and chopped roasted red bell peppers"
+      expect(dish.ingredients[2].description).to eq "cup pitted kalamata olives, cut in half"
     end
 
     it "reads the correct quantities of ingredients" do
       expect(dish.ingredients[0].quantity).to eq '1/2'.to_r
-      expect(dish.ingredients[1].quantity).to eq '2'.to_r
-      expect(dish.ingredients[2].quantity).to eq '1/4'.to_r
+      expect(dish.ingredients[3].quantity).to eq '2'.to_r
+      expect(dish.ingredients[4].quantity).to eq '1/4'.to_r
+    end
+  end
+
+  describe "entree instructions" do
+    let(:dish) { @meals[2].entree }
+
+    it "reads the correct number of instructions" do
+      expect(dish.instructions.size).to be 7
+    end
+
+    it "reads the correct text of the instructions" do
+      expect(dish.instructions[0]).to eq "Preheat oven to 425 degrees"
+      expect(dish.instructions[4]).to eq "Dip fish in egg mixture; dredge in almond flour"
+      expect(dish.instructions[6]).to eq "Bake 8 minutes or until fish flakes with a fork"
     end
   end
 end

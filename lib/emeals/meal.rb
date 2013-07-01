@@ -13,6 +13,7 @@ class Emeals::Meal
   def parse!(meal_text)
     parse_state = :header
     names = []
+    entree_instructions = []
     meal_text.split("\n").each do |line|
       case parse_state
         when :header
@@ -37,10 +38,18 @@ class Emeals::Meal
             add_ingredients_to_dish(line, @entree)
           end
         when :side_ingredients
-          if line =~ /^\d|\xC2\xBC|\xC2\xBD/ # digit or fraction
-            add_ingredients_to_dish(line, @side)
-          else
+          if line =~ /^[A-Z]/
+            entree_instructions << line
             parse_state = :entree_instructions
+          else
+            add_ingredients_to_dish(line, @side)
+          end
+        when :entree_instructions
+          if line.include? "-------"
+            @entree.instructions = entree_instructions.join(" ").split(/\. ?/)
+            parse_state = :side_instructions
+          else
+            entree_instructions << line
           end
         else
 
@@ -100,8 +109,12 @@ class Emeals::Meal
   INGREDIENT_REGEX = /((?:\d|\xC2\xBC|\xC2\xBD)+) (.+?)(?=, (?:\d|\xC2\xBC|\xC2\xBD)+|$)/
 
   def add_ingredients_to_dish(line, dish)
-    line.scan(INGREDIENT_REGEX).each do |quantity, description|
-      dish.ingredients << Emeals::Ingredient.new(quantity, description)
+    if line =~ /^\d|\xC2\xBC|\xC2\xBD/
+      line.scan(INGREDIENT_REGEX).each do |quantity, description|
+        dish.ingredients << Emeals::Ingredient.new(quantity, description)
+      end
+    else
+      dish.ingredients.last.description << " #{line}"
     end
   end
 end
