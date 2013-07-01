@@ -1,3 +1,5 @@
+# encoding:utf-8
+
 class Emeals::Meal
   attr_reader :entree, :side, :flags, :times
 
