@@ -138,4 +138,30 @@ describe Emeals::Client do
       expect(dish.instructions[6]).to eq "Bake 8 minutes or until fish flakes with a fork"
     end
   end
+
+  describe "side instructions" do
+    let(:dish) { @meals[2].side }
+
+    it "reads the correct number of instructions" do
+      expect(dish.instructions.size).to be 7
+    end
+
+    it "reads the correct text of the instructions" do
+      expect(dish.instructions[0]).to eq "Preheat oven to 425 degrees"
+      expect(dish.instructions[1]).to eq "Toss zucchini, 1 tablespoon oil, salt and pepper on a large baking sheet; spread into a single layer"
+      expect(dish.instructions[6]).to eq "Bake 20 minutes or until center is set"
+    end
+
+    context "when the meal is the last on the page" do
+      let(:dish) { @meals[3].side }
+
+      it "reads the correct number of instructions" do
+        expect(dish.instructions.size).to be 1
+      end
+
+      it "reads the correct instruction text" do
+        expect(dish.instructions.first).to eq "Combine spinach, roasted bell peppers, olives, pepperoncini peppers and vinaigrette in a large bowl; toss well to coat"
+      end
+    end
+  end
 end

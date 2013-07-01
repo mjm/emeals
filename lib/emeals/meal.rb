@@ -14,6 +14,7 @@ class Emeals::Meal
     parse_state = :header
     names = []
     entree_instructions = []
+    side_instructions = []
     meal_text.split("\n").each do |line|
       case parse_state
         when :header
@@ -46,16 +47,24 @@ class Emeals::Meal
           end
         when :entree_instructions
           if line.include? "-------"
-            @entree.instructions = entree_instructions.join(" ").split(/\. ?/)
+            add_instructions_to_dish(entree_instructions, @entree)
             parse_state = :side_instructions
           else
             entree_instructions << line
+          end
+        when :side_instructions
+          if line =~ /^Copyright/
+            side_instructions = side_instructions[0..-3]
+            break
+          else
+            side_instructions << line
           end
         else
 
       end
     end
 
+    add_instructions_to_dish(side_instructions, @side)
     self
   end
 
@@ -116,6 +125,10 @@ class Emeals::Meal
     else
       dish.ingredients.last.description << " #{line}"
     end
+  end
+
+  def add_instructions_to_dish(lines, dish)
+    dish.instructions = lines.join(" ").split(/\. ?/)
   end
 end
 
