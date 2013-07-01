@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 require 'spec_helper'
 require 'emeals'
 
@@ -104,6 +102,26 @@ describe Emeals::Client do
       expect(dish.ingredients[0].quantity).to eq '1/4'.to_r
       expect(dish.ingredients[1].quantity).to eq '1/2'.to_r
       expect(dish.ingredients[2].quantity).to eq '4'.to_r
+    end
+  end
+
+  describe "side ingredients" do
+    let(:dish) { @meals[2].side }
+
+    it "reads the correct number of ingredients" do
+      expect(dish.ingredients.size).to be 7
+    end
+
+    it "reads the correct descriptions of ingredients" do
+      expect(dish.ingredients[0].description).to eq "lb fresh zucchini, trimmed and thinly sliced"
+      expect(dish.ingredients[2].description).to eq "teaspoon kosher salt"
+      expect(dish.ingredients[3].description).to eq "teaspoon pepper"
+    end
+
+    it "reads the correct quantities of ingredients" do
+      expect(dish.ingredients[0].quantity).to eq '1/2'.to_r
+      expect(dish.ingredients[1].quantity).to eq '2'.to_r
+      expect(dish.ingredients[2].quantity).to eq '1/4'.to_r
     end
   end
 end

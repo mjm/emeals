@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 class Emeals::Meal
   attr_reader :entree, :side, :flags, :times
 
@@ -34,9 +32,13 @@ class Emeals::Meal
           if line.include? "-------"
             parse_state = :side_ingredients
           else
-            line.scan(/((?:\d|¼|½)+) (.+?)(?=, (?:\d|¼|½)+|$)/).each do |quantity, description|
-              @entree.ingredients << Emeals::Ingredient.new(quantity, description)
-            end
+            add_ingredients_to_dish(line, @entree)
+          end
+        when :side_ingredients
+          if line =~ /^\d|\xC2\xBC|\xC2\xBD/ # digit or fraction
+            add_ingredients_to_dish(line, @side)
+          else
+            parse_state = :entree_instructions
           end
         else
 
@@ -59,19 +61,6 @@ class Emeals::Meal
     end
   end
 
-  def parse_flags(line)
-    FLAGS.each do |flag, sym|
-      @flags << sym if line.include? flag
-    end
-  end
-
-  def parse_times(line)
-    times = line.split(" ")
-    @times[:prep] = times.first
-    @times[:cook] = times[1]
-    @times[:total] = times[2..-1].join(" ")
-  end
-
   private
 
   def separate_entree_and_side_names(names)
@@ -91,6 +80,27 @@ class Emeals::Meal
 
   def join_names(names)
     names.join(" ").gsub('- ', '-')
+  end
+
+  def parse_flags(line)
+    FLAGS.each do |flag, sym|
+      @flags << sym if line.include? flag
+    end
+  end
+
+  def parse_times(line)
+    times = line.split(" ")
+    @times[:prep] = times.first
+    @times[:cook] = times[1]
+    @times[:total] = times[2..-1].join(" ")
+  end
+
+  INGREDIENT_REGEX = /((?:\d|\xC2\xBC|\xC2\xBD)+) (.+?)(?=, (?:\d|\xC2\xBC|\xC2\xBD)+|$)/
+
+  def add_ingredients_to_dish(line, dish)
+    line.scan(INGREDIENT_REGEX).each do |quantity, description|
+      dish.ingredients << Emeals::Ingredient.new(quantity, description)
+    end
   end
 end
 
@@ -116,9 +126,9 @@ class Emeals::Ingredient
 
   def to_quantity(str)
     case str
-      when "¼"; '1/4'
-      when "½"; '1/2'
-      else      str
+      when "\xC2\xBC"; '1/4'
+      when "\xC2\xBD"; '1/2'
+      else             str
     end.to_r
   end
 end
