@@ -1,5 +1,7 @@
 # encoding:utf-8
 
+require 'emeals/dish'
+
 class Emeals::Meal
   attr_reader :entree, :side, :flags, :times
 
@@ -115,12 +117,12 @@ class Emeals::Meal
     @times[:total] = times[2..-1].join(" ")
   end
 
-  INGREDIENT_REGEX = /((?:\d|\xC2\xBC|\xC2\xBD)+) (.+?)(?=, (?:\d|\xC2\xBC|\xC2\xBD)+|$)/
+  INGREDIENT_REGEX = /(?:\d|\xC2\xBC|\xC2\xBD)+ .+?(?=, (?:\d|\xC2\xBC|\xC2\xBD)+|$)/
 
   def add_ingredients_to_dish(line, dish)
     if line =~ /^\d|\xC2\xBC|\xC2\xBD/
-      line.scan(INGREDIENT_REGEX).each do |quantity, description|
-        dish.ingredients << Emeals::Ingredient.new(quantity, description)
+      line.scan(INGREDIENT_REGEX).each do |match|
+        dish.ingredients << Emeals::Ingredient.parse(match)
       end
     else
       dish.ingredients.last.description << " #{line}"
@@ -129,34 +131,5 @@ class Emeals::Meal
 
   def add_instructions_to_dish(lines, dish)
     dish.instructions = lines.join(" ").split(/\. ?/)
-  end
-end
-
-class Emeals::Dish
-  attr_accessor :name, :ingredients, :instructions
-
-  def initialize(name)
-    @name = name
-    @ingredients = []
-    @instructions = []
-  end
-end
-
-class Emeals::Ingredient
-  attr_accessor :quantity, :description
-
-  def initialize(quantity, description)
-    @quantity = to_quantity(quantity)
-    @description = description
-  end
-
-  private
-
-  def to_quantity(str)
-    case str
-      when "\xC2\xBC"; '1/4'
-      when "\xC2\xBD"; '1/2'
-      else             str
-    end.to_r
   end
 end

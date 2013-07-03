@@ -86,6 +86,8 @@ describe Emeals::Client do
   end
 
   describe "entree ingredients" do
+    include Emeals
+
     let(:dish) { @meals.first.entree }
 
     it "reads the correct number of ingredients" do
@@ -94,18 +96,20 @@ describe Emeals::Client do
 
     it "reads the correct descriptions of ingredients" do
       expect(dish.ingredients[1].description).to eq "small onion, minced"
-      expect(dish.ingredients[3].description).to eq "teaspoon kosher salt"
-      expect(dish.ingredients[4].description).to eq "teaspoon pepper"
+      expect(dish.ingredients[3].description).to eq "kosher salt"
+      expect(dish.ingredients[4].description).to eq "pepper"
     end
 
     it "reads the correct quantities of ingredients" do
-      expect(dish.ingredients[0].quantity).to eq '1/4'.to_r
-      expect(dish.ingredients[1].quantity).to eq '1/2'.to_r
-      expect(dish.ingredients[2].quantity).to eq '4'.to_r
+      expect(dish.ingredients[0].quantity).to eq Emeals::Quantity.new('1/4', 'lb')
+      expect(dish.ingredients[1].quantity).to eq Emeals::Quantity.new('1/2')
+      expect(dish.ingredients[2].quantity).to eq Emeals::Quantity.new('4')
     end
   end
 
   describe "side ingredients" do
+    include Emeals
+
     let(:dish) { @meals[3].side }
 
     it "reads the correct number of ingredients" do
@@ -114,14 +118,14 @@ describe Emeals::Client do
 
     it "reads the correct descriptions of ingredients" do
       expect(dish.ingredients[0].description).to eq "(5-oz) bag baby spinach"
-      expect(dish.ingredients[1].description).to eq "cup drained and chopped roasted red bell peppers"
-      expect(dish.ingredients[2].description).to eq "cup pitted kalamata olives, cut in half"
+      expect(dish.ingredients[1].description).to eq "drained and chopped roasted red bell peppers"
+      expect(dish.ingredients[2].description).to eq "pitted kalamata olives, cut in half"
     end
 
     it "reads the correct quantities of ingredients" do
-      expect(dish.ingredients[0].quantity).to eq '1/2'.to_r
-      expect(dish.ingredients[3].quantity).to eq '2'.to_r
-      expect(dish.ingredients[4].quantity).to eq '1/4'.to_r
+      expect(dish.ingredients[0].quantity).to eq Emeals::Quantity.new('1/2')
+      expect(dish.ingredients[3].quantity).to eq Emeals::Quantity.new('2')
+      expect(dish.ingredients[4].quantity).to eq Emeals::Quantity.new('1/4', 'cup')
     end
   end
 
