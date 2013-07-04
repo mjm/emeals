@@ -4,18 +4,19 @@ require 'fileutils'
 require 'tempfile'
 
 class Emeals::Client
-  def parse(filename)
-    file = copy_to_temp_file(filename)
-    text = pdf_to_text(file.path)
+  def parse(filename_or_file)
+    temp_file = copy_to_temp_file(filename_or_file)
+    text = pdf_to_text(temp_file.path)
 
     Emeals::Menu.parse(text)
   end
 
   private
 
-  def copy_to_temp_file(filename)
+  def copy_to_temp_file(filename_or_file)
     Tempfile.open(['menu', '.pdf']) do |temp|
-      temp.write(File.read(filename))
+      temp.binmode
+      temp.write(filename_or_file.is_a?(String) ? File.read(filename_or_file) : filename_or_file.read)
       temp
     end
   end

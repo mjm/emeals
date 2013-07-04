@@ -10,6 +10,14 @@ describe Emeals::Client do
     @meals = @menu.meals
   end
 
+  context "when given a File handle instead of a filename" do
+    it "completes successfully" do
+      File.open(menu_path) do |file|
+        expect(client.parse(file).count).to eq 7
+      end
+    end
+  end
+
   it "counts the number of meals in the menu" do
     expect(@menu.count).to eq 7
   end

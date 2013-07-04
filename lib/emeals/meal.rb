@@ -5,7 +5,7 @@ require 'emeals/dish'
 class Emeals::Meal
   attr_reader :entree, :side, :flags, :times
 
-  def initialize
+  def initialize(entree = nil, side = nil)
     @entree = entree
     @side = side
     @flags = []
