@@ -1,12 +1,12 @@
 # encoding: utf-8
 
 class Emeals::Dish
-  attr_accessor :name, :ingredients, :instructions
+  attr_reader :name, :ingredients, :instructions
 
-  def initialize(name)
+  def initialize(name, ingredients = [], instructions = [])
     @name = name
-    @ingredients = []
-    @instructions = []
+    @ingredients = ingredients
+    @instructions = instructions
   end
 end
 

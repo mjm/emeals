@@ -1,34 +1,46 @@
 require 'emeals/meal'
 
 class Emeals::Menu
-  attr_reader :count, :meals
+  attr_reader :meals
 
-  def initialize
-    @count = 0
-    @meals = []
+  def initialize(meals)
+    @meals = meals
   end
 
-  def parse!(menu_text)
+  def count
+    @meals.size
+  end
+
+  def self.parse(menu_text)
+    Emeals::MenuParser.new(menu_text).parse
+  end
+end
+
+class Emeals::MenuParser
+  def initialize(menu_text)
+    @menu_text = menu_text
+  end
+
+  def parse
     buffer = []
+    meals  = []
     add_to_buffer = false
-    menu_text.split("\n").each do |line|
+
+    @menu_text.split("\n").each do |line|
       if line =~ /Meal (\d+)/
         unless buffer.empty? and !add_to_buffer
-          @count = @count + 1
-          @meals << Emeals::Meal.new.parse!(buffer.join("\n"))
+          meals << Emeals::Meal.parse(buffer.join("\n"))
         end
 
-        add_to_buffer = @count < $1.to_i
+        add_to_buffer = meals.size < $1.to_i
         buffer = add_to_buffer ? [line] : []
         next unless add_to_buffer
       else
         buffer << line if add_to_buffer
       end
     end
-    self
-  end
 
-  def self.parse(menu_text)
-    new.parse!(menu_text)
+    Emeals::Menu.new(meals)
   end
 end
+
