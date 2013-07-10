@@ -1,0 +1,31 @@
+Meal 1 <%= @flags %>
+<%= @entree %>
+<%= @side %>
+Prep Cook Total
+<%= [@prep_time, @cook_time, @total_time].join(" ") %>
+¼ lb ground pork sausage
+½ small onion, minced
+<%= "#{@entree_ingredients}\n" unless @entree_ingredients == "" -%>
+4 large eggs, lightly beaten
+¼ teaspoon kosher salt, ¼ teaspoon pepper
+---------------------------------------------------------------
+1 lb fresh zucchini, trimmed and thinly sliced
+1 tablespoon chopped fresh oregano
+<%= "#{@side_ingredients}\n" unless @side_ingredients == "" -%>
+1 tablespoon olive oil
+¼ teaspoon kosher salt, ¼ teaspoon pepper
+Heat a nonstick skillet over medium-high heat.
+Add sausage to pan; cook 6 minutes or until
+done. Drain on a paper towel-lined plate,
+reserving 1 tablespoon drippings in pan. <%= "#{@entree_instructions} " unless @entree_instructions == "" %>Add
+onion to pan over medium heat. Cook 3
+minutes or until lightly browned. Add eggs; cook
+2 minutes, stirring constantly. Stir in sausage,
+salt and pepper; cook until eggs are thickened
+and set. Note: Remaining pork sausage can be
+frozen for up to 2 months.
+---------------------------------------------------------------
+Preheat oven to 425 degrees. Toss zucchini,
+oregano, oil, salt and pepper in a large roasting
+pan. <%= "#{@side_instructions} " unless @side_instructions == "" %>Bake 20 minutes or until just tender.
+

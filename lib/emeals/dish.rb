@@ -37,7 +37,7 @@ class Emeals::Quantity
 end
 
 class Emeals::Ingredient
-  attr_accessor :quantity, :description
+  attr_reader :quantity, :description
 
   def initialize(amount, unit, description)
     @quantity = Emeals::Quantity.new(amount, unit)
