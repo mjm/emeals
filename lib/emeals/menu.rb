@@ -28,7 +28,7 @@ class Emeals::MenuParser
 
     @menu_text.split("\n").each do |line|
       if line =~ /Meal (\d+)/
-        unless buffer.empty? and !add_to_buffer
+        if add_to_buffer and !buffer.empty?
           meals << Emeals::Meal.parse(buffer.join("\n"))
         end
 
