@@ -31,6 +31,7 @@ class Emeals::Quantity
     case str
       when "\xC2\xBC"; '1/4'
       when "\xC2\xBD"; '1/2'
+      when "\xC2\xBE"; '3/4'
       else             str
     end.to_r
   end
@@ -44,7 +45,8 @@ class Emeals::Ingredient
     @description = description
   end
 
-  PARSE_REGEX = /((?:\d|\xC2\xBC|\xC2\xBD)+) (?:(#{Emeals::Quantity::UNITS_WITH_PLURALS.join("|")}) )?(.+)/
+  NUMBER_PATTERN = /\d|\xC2\xBC|\xC2\xBD|\xC2\xBE/
+  PARSE_REGEX = /((?:#{NUMBER_PATTERN})+) (?:(#{Emeals::Quantity::UNITS_WITH_PLURALS.join("|")}) )?(.+)/
 
   def self.parse(line)
     if line =~ PARSE_REGEX

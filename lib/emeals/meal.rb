@@ -114,7 +114,7 @@ class Emeals::MealParser
   end
 
   def parse_side_ingredients(line, ingredients)
-    if line =~ /^[A-Z]/
+    if line =~ /^[A-Z]/ and not line =~ /^Zest/
       [ingredients, [line], :entree_instructions]
     else
       [find_ingredients(ingredients, line), nil, :side_ingredients]
@@ -137,13 +137,17 @@ class Emeals::MealParser
     end
   end
 
-  INGREDIENT_REGEX = /(?:\d|\xC2\xBC|\xC2\xBD)+ .+?(?=, (?:\d|\xC2\xBC|\xC2\xBD)+|$)/
+  NUMBER_PATTERN = Emeals::Ingredient::NUMBER_PATTERN
+  INGREDIENT_REGEX = /(?:#{NUMBER_PATTERN})+ .+?(?=, (?:#{NUMBER_PATTERN})+|$)/
 
   def find_ingredients(ingredients, line)
-    if line =~ /^\d|\xC2\xBC|\xC2\xBD/
+    if line =~ /^#{NUMBER_PATTERN}/
       ingredients + line.scan(INGREDIENT_REGEX).map do |match|
         Emeals::Ingredient.parse(match)
       end
+    elsif line =~/^Zest/
+      # Special case this
+      ingredients + [Emeals::Ingredient.new(1, nil, line)]
     else
       # TODO we shouldn't be modifying this in-place
       ingredients.last.description << " #{line}"
