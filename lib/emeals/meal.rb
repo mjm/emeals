@@ -36,8 +36,9 @@ class Emeals::MealParser
   end
 
   def parse
-    entree_name = side_name = flags = times = nil
+    entree_name = side_name = flags = nil
     names = entree_ingredients = side_ingredients = []
+    times = {}
     parse_state = :header
     entree_instructions = []
     side_instructions = []
@@ -46,7 +47,7 @@ class Emeals::MealParser
       when :header
         flags, parse_state = parse_flags(line)
       when :names
-        entree_name, side_name, names, parse_state = parse_names(line, names)
+        entree_name, side_name, names, entree_ingredients, parse_state = parse_names(line, names)
       when :times
         times, parse_state = parse_times(line)
       when :entree_ingredients
@@ -94,9 +95,12 @@ class Emeals::MealParser
   def parse_names(line, names)
     if line =~ /Prep Cook Total/
       entree_name, side_name = separate_entree_and_side_names(names)
-      [entree_name, side_name, nil, :times]
+      [entree_name, side_name, nil, [], :times]
+    elsif line =~ /^#{NUMBER_PATTERN}/
+      entree_name, side_name = separate_entree_and_side_names(names)
+      [entree_name, side_name, nil, *parse_entree_ingredients(line, [])]
     else
-      [nil, nil, names + [line], :names]
+      [nil, nil, names + [line], [], :names]
     end
   end
 
