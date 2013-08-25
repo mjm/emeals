@@ -23,7 +23,7 @@ class Emeals::Client
 
   def pdf_to_text(filename)
     system(pdf_to_text_path, '-raw', '-enc', 'UTF-8', filename)
-    File.read(filename.sub(/\.pdf$/, '.txt'))
+    File.open(filename.sub(/\.pdf$/, '.txt'), mode: 'r', encoding: 'UTF-8') { |f| f.read }
   end
 
   def pdf_to_text_path
