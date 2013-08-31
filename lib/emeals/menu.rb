@@ -1,7 +1,10 @@
 require 'emeals/meal'
+require 'emeals/json'
 
 class Emeals::Menu
   attr_reader :meals
+
+  include Emeals::JSON
 
   def initialize(meals)
     @meals = meals

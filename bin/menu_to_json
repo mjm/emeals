@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require 'emeals'
+
+filename = ARGV.shift
+menu = Emeals::Client.new.parse(filename)
+
+puts menu.to_json

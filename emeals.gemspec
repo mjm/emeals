@@ -8,9 +8,11 @@ Gem::Specification.new do |gem|
   gem.version       = Emeals::VERSION
   gem.authors       = ["Matt Moriarity"]
   gem.email         = ["matt@mattmoriarity.com"]
-  gem.description   = %q{A client for interpreting eMeals menus.}
+  gem.description   = %q{A client for reading eMeals menus.}
   gem.summary       = %q{eMeals Client}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/mjm/emeals"
+
+  gem.add_runtime_dependency "multi_json"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
